@@ -1,0 +1,4 @@
+---
+
+- name: Update the server
+  apt: update_cache=yes upgrade=full

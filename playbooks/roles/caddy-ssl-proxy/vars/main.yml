@@ -1,0 +1,31 @@
+# defaults file for caddy-ansible
+caddy_user: caddy
+caddy_home: /home/caddy
+caddy_features: git
+caddy_update: yes
+caddy_config: |
+https://online.phasmatis.net:443 {
+      proxy /sonarr http://172.17.0.1:8989 {
+      header_upstream Host {hostonly}
+      header_downstream Host {host}
+      }
+      proxy /nzbget http://172.17.0.1:6789 {
+      header_upstream Host {hostonly}
+      header_downstream Host {host}
+      }
+      proxy /deluge http://172.17.0.1:8112/ {
+      transparent
+      without /deluge
+      header_upstream X-Deluge-Base "/deluge"
+      }
+      root /data/www/
+      errors {
+          404 404.html
+          }
+      log /var/log/caddy/access.log {
+          rotate {
+              size 10
+              age 30
+              }
+      }
+  }

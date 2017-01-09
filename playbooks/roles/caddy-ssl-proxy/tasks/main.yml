@@ -1,0 +1,62 @@
+- name: Create Caddy Group
+  group:
+    name: caddy
+    state: present
+
+- name: Create Caddy user
+  user: name={{ caddy_user }} system=yes createhome=yes home={{ caddy_home }} group={{ caddy_user }}
+  become: true
+
+- name: Download Caddy
+  get_url: url=https://caddyserver.com/download/build?os=linux&arch=amd64&features={{ caddy_features }} dest={{ caddy_home }}/caddy.tar.gz force=yes
+  become: true
+  register: caddy_bin
+
+- name: Extract Caddy
+  unarchive: src={{ caddy_home }}/caddy.tar.gz dest={{ caddy_home }} copy=no owner={{ caddy_user }}
+  become: true
+  when: caddy_bin.changed
+
+- name: Copy Caddy Binary
+  copy: src={{ caddy_home }}/caddy dest=/usr/local/bin/ mode=0755 remote_src=True
+  become: true
+  notify: Restart Caddy
+
+- name: Create directories
+  file: path={{ item }} state=directory owner={{ caddy_user }} mode=0700
+  become: true
+  with_items:
+    - /etc/caddy
+    - /etc/ssl/caddy
+    - /var/log/caddy
+
+- name: Create Caddyfile
+  copy: content="{{caddy_config}}" dest=/etc/caddy/Caddyfile owner={{ caddy_user }}
+  become: true
+  notify: Restart Caddy
+
+- name: Systemd service
+  template: src=caddy.service dest=/etc/systemd/system/caddy.service mode=0755
+  become: true
+  notify: Reload systemd service file
+
+- name: Log Rotate
+  template: src=caddy.logrotate dest=/etc/logrotate.d/caddy mode=0644
+  become: true
+  notify: Reload systemd service file
+
+- name: Check if the binary can bind to TCP port <1024
+  shell: getcap /usr/local/bin/caddy | grep cap_net_bind_service
+  failed_when: False
+  changed_when: False
+  become: true
+  register: caddy_bind_cap
+
+- name: Set capability on the binary file to be able to bind to TCP port <1024
+  command: setcap cap_net_bind_service=+ep /usr/local/bin/caddy
+  when: caddy_bind_cap.rc > 0
+  become: true
+
+- name: Start Caddy service
+  service: name=caddy state=started enabled=yes
+  become: true

@@ -1,0 +1,15 @@
+[Unit]
+Description=Sonarr container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=1g --log-driver=none -p 8989:8989 --name=sonarr -e PUID=999 -e PGID=1001 -v /data/downloads/usenet/sonarrconf:/config -v /data/downloads/usenet:/downloads -v /data/downloads/usenet/complete/series:/tv linuxserver/sonarr
+ExecStop=/usr/bin/docker stop -t 2 sonarr
+ExecStopPost=/usr/bin/docker rm -f sonarr
+
+[Install]
+WantedBy=default.target

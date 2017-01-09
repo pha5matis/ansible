@@ -1,0 +1,15 @@
+[Unit]
+Description=NZBGet container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=1g --log-driver=none -p 6789:6789 --name=nzbget -e TZ=GB -e PUID=999 -e PGID=1001 -v /data/downloads/usenet/nzbgetconf:/config -v /data/downloads/usenet:/downloads phasmatis/nzbget
+ExecStop=/usr/bin/docker stop -t 2 nzbget
+ExecStopPost=/usr/bin/docker rm -f nzbget
+
+[Install]
+WantedBy=default.target

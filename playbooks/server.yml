@@ -1,0 +1,11 @@
+---
+- hosts: online.phasmatis.net
+  vars:
+    user: phasma
+    
+  
+  roles:
+   - { role: docker, tags: docker }
+   - { role: standardbuild, tags: standardbuild }
+   - { role: fail2ban, tags: fail2ban }
+   - { role: docker-nzbget, tags: docker-nzbget }

@@ -1,0 +1,8 @@
+ - name: Install Sonarr Docker Container Svc
+   template: src=../templates/sonarr.service.j2 dest=/etc/systemd/system/sonarr.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Start Sonarr
+   become: true
+   service: name=sonarr state=running enabled=true

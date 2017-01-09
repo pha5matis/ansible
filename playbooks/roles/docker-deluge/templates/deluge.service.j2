@@ -1,0 +1,15 @@
+[Unit]
+Description=deluge container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=1g --log-driver=none -p 8080:8080 --name=deluge --net=host -e TZ=GB -e PUID=999 -e PGID=1001 -v /data/downloads/torrents/delugeconf:/config -v /data/downloads/torrents/complete:/downloads phasmatis/deluge
+ExecStop=/usr/bin/docker stop -t 2 deluge
+ExecStopPost=/usr/bin/docker rm -f deluge
+
+[Install]
+WantedBy=default.target

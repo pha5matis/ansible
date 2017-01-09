@@ -1,0 +1,8 @@
+ - name: Install Deluge Docker Container Svc
+   template: src=../templates/deluge.service.j2 dest=/etc/systemd/system/deluge.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Start Deluge
+   become: true
+   service: name=deluge state=running enabled=true

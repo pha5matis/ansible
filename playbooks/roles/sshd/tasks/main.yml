@@ -1,0 +1,26 @@
+- name: Install sshd server
+  apt: pkg=openssh-server state=present
+  become: true
+  
+- name: Install custom sshd_config
+  template: src=sshd_config dest=/etc/ssh/sshd_config
+  become: true
+  
+- name: Install custom motd
+  template: src=../templates/motd dest=/etc/motd
+
+- name: Install custom issue.net
+  template: src=../templates/issue.net dest=/etc/issue.net
+  
+- name: Install root.issue.net
+  template: src=../templates/root.issue.net dest=/etc/root.issue.net
+
+- name: Reload systemd service file
+  command: systemctl daemon-reload
+  notify: Restart SSH
+  become: true
+  ignore_errors: yes
+
+- name: Restart SSH
+  service: name=ssh state=restarted
+  become: true
