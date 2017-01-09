@@ -17,7 +17,8 @@ Ansible Playbooks for setting up various services.
 
 ## Linux
 
-'''
+```
 git clone https://github.com/pha5matis/ansible.git ~/ansible
 cd ~/ansible
 ansible-playbook /playbooks/server.yml
+```
