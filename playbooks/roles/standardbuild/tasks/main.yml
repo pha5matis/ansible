@@ -41,3 +41,7 @@
      value: 1
      state: present
      reload: yes
+
+- name: Install Glances
+  become: true
+  raw: "curl -L http://bit.ly/glances | /bin/bash"

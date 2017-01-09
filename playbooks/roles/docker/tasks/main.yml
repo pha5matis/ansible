@@ -22,13 +22,24 @@
     - docker-engine
 - 
   become: true
-  name: "Start Docker"
-  service: "name=docker state=started enabled=yes"
-- 
-  become: true
   group: "name=docker state=present"
   name: "Create Docker user group"
 - 
   become: true
   name: "Add localuser to group"
   user: "name={{user}} groups=docker append=yes"
+
+-
+  become: true
+  name: "Fix Docker IPTables - check docker.service.d exists"
+  file: "path=/etc/systemd/system/docker.service.d state=directory recurse=yes"
+
+-
+  become: true
+  name: "Fix Docker IPTables - copy config file"
+  template: "src=..\file\noiptables.conf dest=/etc/systemd/system/docker.service.d/noiptables.conf"
+
+-
+  become: true
+  name: "Start Docker"
+  service: "name=docker state=started enabled=yes"
