@@ -2,6 +2,7 @@
 
 Ansible Playbooks for setting up various services.
 
+Tested on Ubuntu 16.04
 
 ### Roles
 
