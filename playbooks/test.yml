@@ -1,5 +1,5 @@
 ---
-- hosts: online.phasmatis.net
+- hosts: local
   vars:
     user: phasma
     
