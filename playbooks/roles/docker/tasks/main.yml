@@ -37,7 +37,7 @@
 -
   become: true
   name: "Fix Docker IPTables - copy config file"
-  template: "src=..\files\noiptables.conf dest=/etc/systemd/system/docker.service.d/noiptables.conf"
+  template: "src=../files/noiptables.conf dest=/etc/systemd/system/docker.service.d/noiptables.conf"
 
 -
   become: true
