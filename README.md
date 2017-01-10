@@ -20,5 +20,7 @@ Ansible Playbooks for setting up various services.
 ```
 git clone https://github.com/pha5matis/ansible.git ~/ansible
 cd ~/ansible
+chmod +x ubuntuinstall.sh
+./ubuntuinstall.sh
 ansible-playbook /playbooks/server.yml
 ```
