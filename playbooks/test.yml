@@ -5,4 +5,4 @@
     
   
   roles:
-   - { role: sshd, tags: sshd }
+   - { role: docker-openvpn, tags: docker-openvpn }
