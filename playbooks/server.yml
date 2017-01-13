@@ -2,10 +2,15 @@
 - hosts: online.phasmatis.net
   vars:
     user: phasma
-    
-  
+
   roles:
    - { role: docker, tags: docker }
    - { role: standardbuild, tags: standardbuild }
    - { role: fail2ban, tags: fail2ban }
+   - { role: docker-nzbget, tags: docker-nzbget }
+   - { role: docker-sonarr, tags: docker-sonarr }
+   - { role: docker-deluge, tags: docker-deluge }
+   - { role: caddy-ssl-proxy, tags: caddy-ssl-proxy }
+   - { role: sshd, tags: sshd }
+   - { role: docker-nzbget, tags: docker-nzbget }
    - { role: docker-nzbget, tags: docker-nzbget }
