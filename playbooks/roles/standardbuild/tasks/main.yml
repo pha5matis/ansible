@@ -42,6 +42,14 @@
      state: present
      reload: yes
 
-- name: Install Glances
-  become: true
-  raw: "curl -L http://bit.ly/glances | /bin/bash"
+ - name: Install Glances
+   become: true
+   raw: "curl -L http://bit.ly/glances | /bin/bash"
+
+ - name: Create UseNetGrp Group
+   become: true
+   group: name=usenetgrp state=present gid=1001
+
+ - name: Create UseNetUsr User
+   become: true
+   user: name=usenetusr group=usenetgrp state=present system=yes home=no uid=999
