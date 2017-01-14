@@ -1,3 +1,4 @@
+- include_vars: vault_caddyfile.yml
 - name: Create Caddy Group
   group:
     name: caddy
@@ -29,11 +30,16 @@
     - /etc/caddy
     - /etc/ssl/caddy
     - /var/log/caddy
+    - /var/www
 
 - name: Create Caddyfile
-  copy: content="{{caddy_config}}" dest=/etc/caddy/Caddyfile owner={{ caddy_user }}
+  copy: content="{{caddy_config}}" dest=/etc/caddy/caddyfile owner={{ caddy_user }}
   become: true
   notify: Restart Caddy
+
+- name: Install Index.html
+  copy: content="{{index_html}}" dest=/var/www/index.html owner={{ caddy_user }}
+  become: true
 
 - name: Systemd service
   template: src=caddy.service dest=/etc/systemd/system/caddy.service mode=0755
@@ -56,6 +62,14 @@
   command: setcap cap_net_bind_service=+ep /usr/local/bin/caddy
   when: caddy_bind_cap.rc > 0
   become: true
+
+- name: UFW Allow http
+  become: true
+  ufw: rule=allow port=80 proto=tcp
+
+- name: UFW Allow https
+  become: true
+  ufw: rule=allow port=443 proto=tcp
 
 - name: Start Caddy service
   service: name=caddy state=started enabled=yes
