@@ -5,4 +5,4 @@
     
   
   roles:
-   - { role: docker-openvpn, tags: docker-openvpn }
+   - { role: standardbuild, tags: standardbuild }

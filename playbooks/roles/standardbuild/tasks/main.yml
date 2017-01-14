@@ -18,6 +18,9 @@
  - name: Install bash aliases
    template: src=../files/.bash_aliases dest=~/.bash_aliases
 
+ - name: Install bashrc
+   template: src=../files/.bashrc dest=~/.bashrc
+
  - name: Set bash source
    raw: source ~/.bashrc
 
@@ -48,8 +51,18 @@
 
  - name: Create UseNetGrp Group
    become: true
-   group: name=usenetgrp state=present gid=1001
+   group: name=usenetgrp state=present gid=1111
 
  - name: Create UseNetUsr User
    become: true
-   user: name=usenetusr group=usenetgrp state=present system=yes home=no uid=999
+   user: name=usenetusr group=usenetgrp state=present system=yes createhome=no uid=999
+
+ - name: Create Downloads Folder if it doesnt exist
+   become: true
+   file: path=/data/downloads state=directory mode=0660
+
+ - name: Set UseNetUsr Permissions
+   become: true
+   file:  path=/data/downloads owner=usenetusr group=usenetgrp mode=0660 recurse=yes 
+
+
