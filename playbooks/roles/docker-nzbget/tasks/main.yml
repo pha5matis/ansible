@@ -3,6 +3,18 @@
    become: true
    notify: systemd daemon_reload
 
+ - name: Create UseNet Folder if it doesnt exist
+   become: true
+   file: path=/data/downloads/usenet/ state=directory mode=0660
+
+ - name: Create UseNetConf Folder if it doesnt exist
+   become: true
+   file: path=/data/downloads/usenet/nzbgetconf state=directory mode=0660
+
+ - name: Set UseNetUsr Permissions
+   become: true
+   file:  path=/data/downloads owner=usenetusr group=usenetgrp mode=0660 recurse=yes
+
  - name: Start NZBGet
    become: true
    service: name=nzbget state=running enabled=true

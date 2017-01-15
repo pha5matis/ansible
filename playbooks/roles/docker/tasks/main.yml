@@ -11,6 +11,14 @@
   apt: update_cache=yes
   become: true
   name: "Update Apt"
+-
+  become: true
+  name: "Fix Docker IPTables - check docker.service.d exists"
+  file: "path=/etc/systemd/system/docker.service.d state=directory recurse=yes"
+-
+  become: true
+  name: "Fix Docker IPTables - copy config file"
+  template: "src=../files/noiptables.conf dest=/etc/systemd/system/docker.service.d/noiptables.conf"
 - 
   apt: "pkg={{item}} state=present"
   become: true
@@ -28,17 +36,6 @@
   become: true
   name: "Add localuser to group"
   user: "name={{user}} groups=docker append=yes"
-
--
-  become: true
-  name: "Fix Docker IPTables - check docker.service.d exists"
-  file: "path=/etc/systemd/system/docker.service.d state=directory recurse=yes"
-
--
-  become: true
-  name: "Fix Docker IPTables - copy config file"
-  template: "src=../files/noiptables.conf dest=/etc/systemd/system/docker.service.d/noiptables.conf"
-
 -
   become: true
   name: "Start Docker"
