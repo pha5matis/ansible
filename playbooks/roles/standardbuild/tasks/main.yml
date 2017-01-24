@@ -59,10 +59,13 @@
 
  - name: Create Downloads Folder if it doesnt exist
    become: true
-   file: path=/data/downloads state=directory mode=0660
+   file: path=/data/downloads state=directory mode=0770
 
  - name: Set UseNetUsr Permissions
    become: true
    file:  path=/data/downloads owner=usenetusr group=usenetgrp mode=0660 recurse=yes 
 
-
+ - name: Ensure directories are 0770
+   command: find /data/downloads -type d -exec chmod -c 0755 {} \;
+   register: chmod_result
+   changed_when: "chmod_result.stdout != \"\""

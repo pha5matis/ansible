@@ -11,4 +11,5 @@
 #   - { role: caddy-ssl-proxy, tags: caddy-ssl-proxy}
 #   - { role: docker, tags: docker}
 #   - { role: docker-nzbget, tags: docker-nzbget}
-    - { role: docker-sonarr, tags: docker-sonarr}
+#   - { role: docker-sonarr, tags: docker-sonarr}
+    - { role: docker-plex, tags: docker-plex}
