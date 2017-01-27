@@ -1,0 +1,15 @@
+[Unit]
+Description=NZBGet container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=1g --log-driver=none -p 5050:5050 --name=couchpotato --link nzbget -e TZ=Europe/London -e PUID=999 -e PGID=1111 -v /data/downloads/usenet/couchpotatoconf:/config -v /data/downloads/usenet/complete/nzbget/categories/couchpotato:/downloads -v /data/downloads/usenet/complete/movies/:/movies linuxserver/couchpotato
+ExecStop=/usr/bin/docker stop -t 2 couchpotato
+ExecStopPost=/usr/bin/docker rm -f couchpotato
+
+[Install]
+WantedBy=default.target
