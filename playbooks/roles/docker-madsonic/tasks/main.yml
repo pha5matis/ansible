@@ -1,0 +1,24 @@
+ - name: Install Madsonic Docker Container Svc
+   template: src=../templates/madsonic.service.j2 dest=/etc/systemd/system/madsonic.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Create MusicGrp Group
+   become: true
+   group: name=musicgrp state=present gid=2222
+
+ - name: Create MusicUsr User
+   become: true
+   user: name=musicusr group=musicgrp state=present system=yes createhome=no uid=990
+
+ - name: Create MadsonicConf Folder if it doesnt exist
+   become: true
+   file: path=/data/music/madsonicconf state=directory mode=0770
+
+ - name: Set MusicUsr Permissions
+   become: true
+   file:  path=/data/music owner=musicusr group=musicgrp mode=0770 recurse=yes
+
+ - name: Start Madsonic
+   become: true
+   service: name=madsonic state=running enabled=true

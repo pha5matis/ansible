@@ -1,0 +1,15 @@
+[Unit]
+Description=NZBGet container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=1g --log-driver=none -p 4040:4040 --name=madsonic -e TZ=Europe/London -e CONTEXT_PATH= -e PUID=998 -e PGID=1112 -e SSL=no -v /data/music/Albums/:/media -v /data/music/madsonicconf/:/config -v /data/downloads/usenet:/downloads madsonic/alpine-madsonic
+ExecStop=/usr/bin/docker stop -t 2 nzbget
+ExecStopPost=/usr/bin/docker rm -f nzbget
+
+[Install]
+WantedBy=default.target
