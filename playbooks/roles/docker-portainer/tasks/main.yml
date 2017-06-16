@@ -1,0 +1,8 @@
+ - name: Install portainer Docker Container Svc
+   template: src=../templates/portainer.service.j2 dest=/etc/systemd/system/portainer.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Start portainer
+   become: true
+   service: name=portainer state=running enabled=true

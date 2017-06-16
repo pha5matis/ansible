@@ -1,0 +1,28 @@
+ - name: Install grafana Docker Container Svc
+   template: src=../templates/grafana.service.j2 dest=/etc/systemd/system/grafana.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Create stats folder if it doesnt exist
+   become: true
+   file: path=/data/stats state=directory mode=0660
+
+ - name: Create Stats Group
+   become: true
+   group: name=stats state=present
+
+ - name: Create grafana User
+   become: true
+   user: name=grafana group=stats state=present system=yes createhome=no
+
+ - name: Create grafana Folder if it doesnt exist
+   become: true
+   file: path=/data/stats/grafana state=directory mode=0660
+
+ - name: Set grafana Permissions
+   become: true
+   file:  path=/data/stats/grafana owner=grafana group=stats mode=0660 recurse=yes
+
+ - name: Start grafana
+   become: true
+   service: name=grafana state=running enabled=true

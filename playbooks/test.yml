@@ -8,10 +8,13 @@
 #   - { role: standardbuild, tags: standardbuild }
 #   - { role: fail2ban, tags: fail2ban}
 #   - { role: sshd, tags: sshd}
-#   - { role: caddy-ssl-proxy, tags: caddy-ssl-proxy}
+   - { role: caddy-ssl-proxy, tags: caddy-ssl-proxy}
 #   - { role: docker, tags: docker}
 #   - { role: docker-nzbget, tags: docker-nzbget}
 #   - { role: docker-sonarr, tags: docker-sonarr}
 #   - { role: docker-plex, tags: docker-plex}
 #   - { role: docker-couchpotato, tags: docker-couchpotato}
-    - { role: docker-madsonic, tags: docker-madsonic}
+#   - { role: docker-madsonic, tags: docker-madsonic}
+#   - { role: docker-portainer, tags: docker-portainer}
+#    - { role: docker-grafana, tags: docker-grafana}
+#    - { role: docker-influxdb, tags: docker-influxdb}
