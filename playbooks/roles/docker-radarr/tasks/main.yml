@@ -1,0 +1,8 @@
+ - name: Install Radarr Docker Container Svc
+   template: src=../templates/radarr.service.j2 dest=/etc/systemd/system/radarr.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Start Radarr
+   become: true
+   service: name=radarr state=started enabled=true

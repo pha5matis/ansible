@@ -1,0 +1,24 @@
+ - name: Install Subsonic Docker Container Svc
+   template: src=../templates/subsonic.service.j2 dest=/etc/systemd/system/subsonic.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Create MusicGrp Group
+   become: true
+   group: name=musicgrp state=present gid=2222
+
+ - name: Create MusicUsr User
+   become: true
+   user: name=musicusr group=musicgrp state=present system=yes createhome=no uid=990
+
+ - name: Create SubsonicConf Folder if it doesnt exist
+   become: true
+   file: path=/data/music/subsonicconf state=directory mode=0770
+
+ - name: Set MusicUsr Permissions
+   become: true
+   file:  path=/data/music owner=musicusr group=musicgrp mode=0770 recurse=yes
+
+ - name: Start Subsonic
+   become: true
+   service: name=subsonic state=started enabled=true

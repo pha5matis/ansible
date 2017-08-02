@@ -1,0 +1,15 @@
+[Unit]
+Description=Radarr container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=1g --log-driver=none -p 7878:7878 -e TZ=Europe/London -v /etc/localtime:/etc/localtime:ro --link nzbget --name=radarr -e PUID=999 -e PGID=1111 -v /data/downloads/usenet/radarrconf:/config -v /data/downloads/usenet:/downloads -v /data/downloads/usenet/complete/movies:/movies linuxserver/radarr
+ExecStop=/usr/bin/docker stop -t 2 radarr
+ExecStopPost=/usr/bin/docker rm -f radarr
+
+[Install]
+WantedBy=default.target

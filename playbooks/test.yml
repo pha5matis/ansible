@@ -16,5 +16,7 @@
 #   - { role: docker-couchpotato, tags: docker-couchpotato}
 #   - { role: docker-madsonic, tags: docker-madsonic}
 #   - { role: docker-portainer, tags: docker-portainer}
-#    - { role: docker-grafana, tags: docker-grafana}
-#    - { role: docker-influxdb, tags: docker-influxdb}
+#   - { role: docker-grafana, tags: docker-grafana}
+#   - { role: docker-influxdb, tags: docker-influxdb}
+#   - { role: docker-radarr, tags: docker-radarr}
+#   - { role: docker-subsonic, tags: docker-subsonic}
