@@ -1,0 +1,20 @@
+ - name: Install SABnzbd Docker Container Svc
+   template: src=../templates/sabnzbd.service.j2 dest=/etc/systemd/system/sabnzbd.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Create UseNet Folder if it doesnt exist
+   become: true
+   file: path=/data/downloads/usenet/ state=directory mode=0660
+
+ - name: Create UseNetConf Folder if it doesnt exist
+   become: true
+   file: path=/data/downloads/usenet/sabnzbdconf state=directory mode=0660
+
+ - name: Set UseNetUsr Permissions
+   become: true
+   file:  path=/data/downloads owner=usenetusr group=usenetgrp mode=0660 recurse=yes
+
+ - name: Start SABnzbd
+   become: true
+   service: name=sabnzbd state=running enabled=true

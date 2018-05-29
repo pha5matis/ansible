@@ -1,0 +1,15 @@
+[Unit]
+Description=SABnzbd container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=2g --log-driver=none -p 8080:8080 --name=sabnzbd -e TZ=Europe/London -e PUID=999 -e PGID=1111 -v /data/downloads/usenet/sabnzbdconf:/config -v /data/downloads/usenet/complete:/downloads -v /data/downloads/usenet/incomplete:/incomplete-downloads linuxserver/sabnzbd
+ExecStop=/usr/bin/docker stop -t 2 sabnzbd
+ExecStopPost=/usr/bin/docker rm -f sabnzbd
+
+[Install]
+WantedBy=default.target

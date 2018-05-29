@@ -1,0 +1,24 @@
+ - name: Install UniFi Docker Container Svc
+   template: src=../templates/unifi.service.j2 dest=/etc/systemd/system/unifi.service
+   become: true
+   notify: systemd daemon_reload
+
+ - name: Create UniFi Group
+   become: true
+   group: name=unifigrp state=present gid=1115
+
+ - name: Create UniFi User
+   become: true
+   user: name=unifiusr group=unifigrp state=present system=yes createhome=no uid=995
+
+ - name: Create UniFi Folder if it doesnt exist
+   become: true
+   file: path=/data/admin/docker/dockerconfs/unifi state=directory mode=0770
+
+ - name: Set UniFiUsr Permissions
+   become: true
+   file:  path=/data/admin/docker/dockerconfs/unifi owner=unifiusr group=unifigrp mode=0770 recurse=yes
+
+ - name: Start UniFi
+   become: true
+   service: name=unifi state=running enabled=true

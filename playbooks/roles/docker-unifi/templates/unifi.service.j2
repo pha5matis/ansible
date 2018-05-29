@@ -1,0 +1,16 @@
+[Unit]
+Description=UniFi container
+Requires=docker.service
+After=docker.service
+RequiresMountsFor=/data
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=5min
+ExecStart=/usr/bin/docker run --memory=1g --network adminapp-net --log-driver=none --name=unifi -v /data/admin/docker/dockerconfs/unifi:/config -e PGID=1115 -e PUID=995 -p 3478:3478/udp -p 10001:10001/udp -p 8080:8081 -p 8081:8082 -p 8443:8443 -p 8843:8843 -p 8880:8880 -p 6789:6789 linuxserver/unifi
+ExecStop=/usr/bin/docker stop -t 2 unifi
+ExecStopPost=/usr/bin/docker rm -f unifi
+
+[Install]
+WantedBy=default.target
