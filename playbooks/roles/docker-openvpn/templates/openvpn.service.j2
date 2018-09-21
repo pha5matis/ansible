@@ -1,5 +1,5 @@
 [Unit]
-Description=openvpn container
+Description=OpenVPN container
 Requires=docker.service
 After=docker.service
 
@@ -7,7 +7,7 @@ After=docker.service
 Restart=always
 RestartSec=10
 TimeoutStartSec=5min
-ExecStart=/usr/bin/docker run --privileged --memory=1g --log-driver=none --net=host --name=openvpn -e TZ=GB -e INTERFACE=eth0 -v /data/admin/openvpn/openvpnconf:/config phasmatis/openvpn
+ExecStart=/usr/bin/docker run --name openvpn -v /data/admin/docker/dockerconfs/openvpn:/etc/openvpn -p 443:1194/tcp --cap-add=NET_ADMIN openvpn
 ExecStop=/usr/bin/docker stop -t 2 openvpn
 ExecStopPost=/usr/bin/docker rm -f openvpn
 

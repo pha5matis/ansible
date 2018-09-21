@@ -1,14 +1,14 @@
 ---
-- hosts: local
+- hosts: cloud
 #  vars:
 #    user: phasma
-    
-  
+
+
   roles:
 #   - { role: standardbuild, tags: standardbuild }
 #   - { role: fail2ban, tags: fail2ban}
 #   - { role: sshd, tags: sshd}
-   - { role: caddy-ssl-proxy, tags: caddy-ssl-proxy}
+#   - { role: caddy-ssl-proxy, tags: caddy-ssl-proxy}
 #   - { role: docker, tags: docker}
 #   - { role: docker-nzbget, tags: docker-nzbget}
 #   - { role: docker-sonarr, tags: docker-sonarr}
@@ -22,9 +22,10 @@
 #   - { role: docker-subsonic, tags: docker-subsonic}
 #   - { role: update, tags: update }
 #   - { role: docker-sabnzbd, tags: docker-sabnzbd }
-#    - { role: docker-unifi, tags: docker-unifi }
-
+#   - { role: docker-unifi, tags: docker-unifi }
+   - { role: docker-openvpn, tags: docker-openvpn }
 #- hosts: all
 
 #  roles:
 #   - { role: update, tags: update }
+

@@ -1,17 +1,67 @@
-- name: Check if config has already been generated
-  stat: path=/data/admin/openvpn/openvpn.conf
-  register: configExists
+ - name: Create Docker Data Folder if it doesnt exist
+   file: 
+    path: /data/admin/docker/dockerfiles/
+    owner: root 
+    group: root 
+    mode: 0770 
+    state: directory
 
-- name: Generate OpenVPN Config
-  shell: docker run -v {{vpnconfigdir}}:/etc/openvpn --rm phasmatis/openvpn ovpn_genconfig -u udp://{{vpnfqdn}}
-  when: configExists.stat.exists != true
+ - file: 
+    path: /data/admin/docker/dockerconfs/
+    owner: root 
+    group: root 
+    mode: 0770 
+    state: directory
 
-- name: Check if config has already been generated                                       
-  stat: path=/data/admin/openvpn/openvpn.conf
-  register: pkidirExists
+ - file: 
+    path: /data/admin/docker/dockerconfs/openvpn
+    owner: root 
+    group: root 
+    mode: 0770 
+    state: directory
 
-- name: Generate CA
-  shell: docker run
-      
-- name: debug
-  debug: msg={{configExists.stat.exists}}
+ - name: 'Install Dependencies'
+   apt:
+     name: '{{ item }}'
+     state: 'present'
+   with_items:
+   - 'git'
+   - 'python-pip'
+
+ - name: 'Clone OpenVPN Docker Repo'
+   git:
+    repo: 'https://github.com/kylemanna/docker-openvpn.git'
+    dest: /data/admin/docker/dockerfiles/docker-openvpn
+  
+ - name: 'Install pip packages to manage docker'
+   pip:
+    name: docker
+
+ - name: Build OpenVPN Docker Image
+   docker_image:
+     path: /data/admin/docker/dockerfiles/docker-openvpn
+     name: openvpn
+
+ - name: Extract OpenVPN Configs
+   unarchive:
+     src: files/openvpn.tar.gz
+     dest: /data/admin/docker/dockerconfs/
+
+ - name: Ensure directories are 0770
+   command: find /data/admin/docker/dockerconfs/ -type d -exec chmod 0770 {} \;
+
+ - name: Ensure files are 0660
+   command: find /data/admin/docker/dockerconfs/ -type f -exec chmod 0660 {} \;
+
+ - name: Install OpenVPN Docker Systemd Service
+   template: src=../templates/openvpn.service.j2 dest=/etc/systemd/system/openvpn.service
+   become: true
+
+ - name: Force Systemd Reload
+   systemd:
+    daemon_reload: yes
+
+ - name: Make sure a service is running
+   systemd:
+     state: started
+     name: openvpn
