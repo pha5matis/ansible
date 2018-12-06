@@ -1,0 +1,7 @@
+---
+- hosts: esclus
+  roles:
+     - role: common
+     - role: elasticsearch-esclus
+       elasticsearch_cluster_name: elastic-clus
+       elasticsearch_host_list: ['127.0.0.1']

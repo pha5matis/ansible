@@ -1,0 +1,5 @@
+---
+     elasticsearch_cluster_name: ESCluster
+     elasticsearch_data: /data/elasticsearch/data
+     elasticsearch_logs: /data/elasticsearch/logs
+     elasticsearch_host_list: ['127.0.0.1']

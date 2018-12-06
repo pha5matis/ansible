@@ -1,0 +1,37 @@
+---
+    - name: Adding ElasticSearch GPG Key
+      apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch state=present
+
+    - name: Enabling Debian 8 elasticsearch-2.x Repo
+      apt_repository: repo='deb https://packages.elastic.co/elasticsearch/2.x/debian stable main' state=present
+
+    - name: Enabling Debian 8 backports repo
+      apt_repository: repo='deb http://ftp.debian.org/debian jessie-backports main' state=present
+
+    - name: apt-update
+      apt: update_cache=yes
+
+    - name: Install JDK 8
+      apt: name=openjdk-8-jre-headless state=latest
+
+    - name: Install ElasticSearch
+      apt: name=elasticsearch state=latest
+
+    - name: Create elasticsearch logs folders
+      file: path={{ elasticsearch_logs }} state=directory owner=elasticsearch group=elasticsearch mode=777
+
+    - name: Create elasticsearch data folders
+      file: path={{ elasticsearch_data }} state=directory owner=elasticsearch group=elasticsearch mode=777
+
+    - name: daemon-reload
+      command: "systemctl daemon-reload"
+
+    - name: Start ElasticSearch on boot
+      service: name=elasticsearch enabled=yes state=started
+
+    - name: Setup ElasticSearch config
+      template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
+      notify: restart elasticsearch
+
+    - name: Enable Kopf Plugin
+      raw: /usr/share/elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf/2.0

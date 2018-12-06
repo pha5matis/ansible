@@ -1,0 +1,10 @@
+port 26379
+daemonize yes
+pidfile "/var/run/redis/redis-sentinel.pid"
+loglevel notice
+logfile "/var/log/redis/redis-sentinel.log"
+
+sentinel monitor {{ sentinel_group_name }} {{ sentinel_primary_server }} 6379 2
+sentinel down-after-milliseconds {{ sentinel_group_name }} 5000
+sentinel failover-timeout {{ sentinel_group_name }} 900000
+sentinel parallel-syncs {{ sentinel_group_name }} 2

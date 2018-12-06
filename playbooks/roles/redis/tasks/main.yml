@@ -1,0 +1,92 @@
+---
+    - name: Add nodejs repo (1/2)
+      apt_repository: repo="deb https://deb.nodesource.com/node_6.x jessie main" state=present
+
+    - name: Add nodejs repo (2/2)
+      apt_repository: repo="deb-src https://deb.nodesource.com/node_6.x jessie main" state=present
+
+    - name: Add nodejs repo GPG key
+      apt_key: url="https://deb.nodesource.com/gpgkey/nodesource.gpg.key" state=present
+
+    - name: Install Make and Nodejs
+      apt: name={{ item }} state=latest update_cache=yes
+      with_items: "{{ packages }}"
+
+    - name: Download redis
+      get_url: url="{{ redis_url }}" dest="{{ redis_dest }}"
+
+    - name: Create extract directory
+      file: path="{{ redis_extracted_dest }}" state=directory mode=0755
+
+    - name: Extract redis
+      command: tar xvzf "{{ redis_dest }}"
+
+    - name: Make redis
+      make: chdir="{{ redis_extracted_dest }}"
+
+    - name: Make Test redis
+      make: chdir="{{ redis_extracted_dest }}" target="test"
+
+    - name: Make Install redis
+      make: chdir="{{ redis_extracted_dest }}" target="install"
+
+    - name: Redis-Server systemd script
+      action: copy src=redis-server.service
+        dest=/etc/systemd/system/redis-server.service
+        owner=0 group=0 mode=644
+
+    - name: redis-sentinel systemd script
+      action: copy src=redis-sentinel.service
+        dest=/etc/systemd/system/redis-sentinel.service
+        owner=0 group=0 mode=644
+
+    - name: Create redis user
+      user:  name=redis system=yes createhome=no
+
+    - name: Create redis config directory
+      file: path=/etc/redis state=directory mode=0777
+
+    - name: Create redis running directory
+      file: path=/var/lib/redis/redis-server state=directory mode=0777
+
+    - name: Create redis logging directory
+      file: path=/var/log/redis state=directory mode=0777
+
+    - name: Setup Redis config
+      template: src=redis.conf.j2 dest=/etc/redis/redis.conf
+
+    - name: Setup Redis sentinel config
+      template: src=redis-sentinel.conf.j2 dest=/etc/redis/redis-sentinel.conf
+
+    - name: Start redis-sentinel on boot
+      service: name=redis-sentinel enabled=yes state=started
+
+    - name: Start Redis-Server on boot
+      service: name=redis-server enabled=yes state=started
+
+    - name: Install NPM Modules
+      command: npm install -g {{ item }}
+      with_items: "{{ node_modules }}"
+
+    - name: pm2 redis-commander
+      command: pm2 start redis-commander
+
+    - name: pm2 update startup app list
+      command: pm2 update
+
+    - name: pm2 systemd script
+      command: pm2 startup
+
+    - name: Start pm2 on boot
+      service: name=pm2 enabled=yes
+
+    - name: Increase Max Connections
+      sysctl: name=net.core.somaxconn value=65535 state=present
+
+    - name: Allow memory overcommit
+      sysctl: name=vm.overcommit_memory value=1 state=present
+
+    - name: rc.local disable transparent_hugepage
+      action: copy src=rc.local
+        dest=/etc/rc.local
+        owner=0 group=0 mode=755

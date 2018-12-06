@@ -1,0 +1,10 @@
+---
+     redis_url: 'http://download.redis.io/releases/redis-3.0.4.tar.gz'
+     redis_dest: '/root/redis-3.0.4.tar.gz'
+     redis_extracted_dest: '/root/redis-3.0.4'
+     redis_config_location: '/etc/redis'
+     packages: ['build-essential','nodejs','tcl']
+     node_modules: ['pm2','redis-commander']
+     sentinel_group_name: 'resque'
+     sentinel_primary_server: '172.17.2.129'
+     sentinel_slaves_servers: ['172.17.2.130','172.17.2.151']
